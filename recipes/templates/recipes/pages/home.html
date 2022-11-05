@@ -1,17 +1,36 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-    {% include 'recipes/partials/head.html' %}
-    <body>
+{% include 'recipes/partials/head.html' %}
 
-        <header class="main-header-container">
-            <div class="main-header container">
-                <h1>
-                    <a class="main-logo" href="/">
-                        <i class="fa-solid fa-utensils main-logo-icon"></i>
-                        <span>Recipes</span>
-                    </a>
-                </h1>
+<body>
+    {% include 'recipes/partials/header.html'%}
+
+    {% include 'recipes/partials/search.html' %}
+
+    <div class="main-content-container">
+        <div class="main-content main-content-list container">
+            <div class="recipe recipe-list-item">
+                <div class="recipe-cover">
+                    <img src="https://via.placeholder.com/1280x720.png/269fe6" alt="Temporario">
+                </div>
+                <h1>Olá</h1>
             </div>
-        </header>
-    </body>
+
+            <div class="recipe recipe-list-item">
+                <div class="recipe-cover">
+                    <img src="https://via.placeholder.com/1280x720.png/269fe6" alt="Temporario">
+                </div>
+                <h1>Olá</h1>
+            </div>
+
+            <div class="recipe recipe-list-item">
+                <div class="recipe-cover">
+                    <img src="https://via.placeholder.com/1280x720.png/269fe6" alt="Temporario">
+                </div>
+                <h1>Olá</h1>
+            </div>
+        </div>
+    </div>
+</body>
+
 </html>
