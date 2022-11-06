@@ -7,30 +7,20 @@
 
     {% include 'recipes/partials/search.html' %}
 
-    <div class="main-content-container">
+    <main class="main-content-container">
         <div class="main-content main-content-list container">
-            <div class="recipe recipe-list-item">
-                <div class="recipe-cover">
-                    <img src="https://via.placeholder.com/1280x720.png/269fe6" alt="Temporario">
-                </div>
-                <h1>Olá</h1>
-            </div>
 
-            <div class="recipe recipe-list-item">
-                <div class="recipe-cover">
-                    <img src="https://via.placeholder.com/1280x720.png/269fe6" alt="Temporario">
-                </div>
-                <h1>Olá</h1>
-            </div>
+            {% include 'recipes/partials/recipe.html' %}
+            {% include 'recipes/partials/recipe.html' %}
+            {% include 'recipes/partials/recipe.html' %}
+            {% include 'recipes/partials/recipe.html' %}
+            {% include 'recipes/partials/recipe.html' %}
+            {% include 'recipes/partials/recipe.html' %}
 
-            <div class="recipe recipe-list-item">
-                <div class="recipe-cover">
-                    <img src="https://via.placeholder.com/1280x720.png/269fe6" alt="Temporario">
-                </div>
-                <h1>Olá</h1>
-            </div>
         </div>
-    </div>
+    </main>
+
+    {% include 'recipes/partials/footer.html' %}
 </body>
 
 </html>
