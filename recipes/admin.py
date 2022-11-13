@@ -9,9 +9,10 @@ class CategoryAdmin(admin.ModelAdmin):
     pass
 
 
+@admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     pass
 
 
 admin.site.register(Category, CategoryAdmin)
-admin.site.register(Recipe, RecipeAdmin)
+# admin.site.register(Recipe, RecipeAdmin)

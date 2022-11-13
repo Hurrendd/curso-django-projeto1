@@ -1,32 +1,54 @@
 <div class="recipe recipe-list-item">
     <div class="recipe-cover">
-        <a href="{% url 'recipes:recipe' recipe.id %}">
-            <img src="{{ recipe.cover.url }}" alt="Temporario">
-        </a>
+        {% if recipe.cover %}
+            <a href="{% url 'recipes:recipe' recipe.id %}">
+                <img src="{{ recipe.cover.url }}" alt="Temporario">
+            </a>
+            {{ recipe.cover.url }}
+        {% else %}
+            <a href="{% url 'recipes:recipe' recipe.id %}">
+                <img src="/media/recipes/covers/imagem_nao_disponivel.jpg"
+                    alt="Temporario">
+            </a>
+        {% endif %}
     </div>
     <div class="recipe-title-container">
         <h2 class="recipe-title">
             <a href="{% url 'recipes:recipe' recipe.id %}">
-                {{ recipe.title }
+                {{ recipe.title }}
             </a>
-        }</h2>
+        </h2>
     </div>
 
     <div class="recipe-author">
-        <span class="recipe-author-item">
-            <i class="fa-solid fa-user"></i>
-            {{ recipe.author.first_name }}
-        </span>
+        
+        {% if recipe.author is not None %}
+            <span class="recipe-author-item">
+                <i class="fa-solid fa-user"></i>
+                {% if recipe.author.first_name %}
+                    {{ recipe.author.first_name }} {{ recipe.author.last_name}}
+                {% else %}
+                    {{ recipe.author.username}}
+                {% endif %}
+            </span>
+        {% else %}
+            <span class="recipe-author-item">
+                <i class="fa-solid fa-user"></i>
+                Autor Desconhecido
+            </span>
+        {% endif %}
         <span class="recipe-author-item">
             <i class="fa-solid fa-calendar-days"></i>
             {{recipe.created_at|date:"d/M/Y "}} às {{recipe.created_at|date:" H:i:s"}}
         </span>
-        <span class="recipe-author-item">
-            <a href="">
-                <i class="fa-solid fa-layer-group"></i>
-                <span>{{ recipe.category.name }}</span>
-            </a>
-        </span>
+        {% if recipe.category is not None %}
+            <span class="recipe-author-item">
+                <a href="{% url 'recipes:category' recipe.category.id %}">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span>{{ recipe.category.name }}</span>
+                </a>
+            </span>
+        {% endif %}
     </div>
 
     <div class="recipe-content">
@@ -37,30 +59,30 @@
         <div class="recipe-meta recipe-preparation">
             <h3 class="recipe-meta-title"><i class="fa-solid fa-stopwatch"></i> Preparo</h3>
             <div class="recipe-meta-text">
-                {{ recipe.preparation_time }} {{ recipe.preparation_time_unit }}
+                {{ recipe.preparation_time }}
             </div>
         </div>
 
         <div class="recipe-meta recipe-servings">
             <h3 class="recipe-meta-title"><i class="fa-solid fa-pizza-slice"></i> Porções</h3>
             <div class="recipe-meta-text">
-                {{ recipe.servings }} {{ recipe.servings_unit }}
+                {{ recipe.servings_unit }}
             </div>
         </div>
     </div>
 
     {% if is_detail_page is not True %}
-        <footer class="recipe-footer">
-            <a href="{% url 'recipes:recipe' recipe.id %}" class="recipe-read-more button button-dark button-full-width">
-                <i class="fa-solid fa-eye"></i>
-                <span>Ver mais...</span>
-            </a>
-        </footer>
+    <footer class="recipe-footer">
+        <a href="{% url 'recipes:recipe' recipe.id %}" class="recipe-read-more button button-dark button-full-width">
+            <i class="fa-solid fa-eye"></i>
+            <span>Ver mais...</span>
+        </a>
+    </footer>
     {% endif %}
 
     {% if is_detail_page is True %}
-        <div class="preparation-steps">
-            {{ recipe.preparation_steps|linebreaksbr }}
-        </div>
+    <div class="preparation-steps">
+        {{ recipe.preparation_steps|linebreaksbr }}
+    </div>
     {% endif %}
 </div>
