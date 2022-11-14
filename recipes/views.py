@@ -29,9 +29,11 @@ def category(request, category_id: int):
 
 
 def recipe(request, id: int):
-
+    # recipe = Recipe.objects.filter(id=id, is_published=True).first()
+    # A linha abaixo substitui a linha acima, e tambem enviar uma pagina de erro se o codigo não existir
+    recipe = get_object_or_404(Recipe, pk=id, is_published=True)
     return render(request, 'recipes/pages/recipe-view.html', context={
-        'recipe': make_recipe(),
+        'recipe': recipe,
         'is_detail_page': True,
 
     })

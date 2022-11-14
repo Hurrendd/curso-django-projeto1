@@ -4,7 +4,6 @@
             <a href="{% url 'recipes:recipe' recipe.id %}">
                 <img src="{{ recipe.cover.url }}" alt="Temporario">
             </a>
-            {{ recipe.cover.url }}
         {% else %}
             <a href="{% url 'recipes:recipe' recipe.id %}">
                 <img src="/media/recipes/covers/imagem_nao_disponivel.jpg"
@@ -82,7 +81,12 @@
 
     {% if is_detail_page is True %}
     <div class="preparation-steps">
-        {{ recipe.preparation_steps|linebreaksbr }}
+        {% if recipe.preparation_steps_is_html is True %}
+            {{ recipe.preparation_steps|safe }}
+        {% else %}
+            {{ recipe.preparation_steps|linebreaksbr }}
+        {% endif %}
+        
     </div>
     {% endif %}
 </div>
