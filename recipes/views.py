@@ -9,6 +9,22 @@ from .models import Recipe
 
 
 def home(request):
+    # Duplica as receitas baseado na ID=1
+    #r = Recipe.objects.get(pk=1)
+    # for receitas in range(20):
+    #    r.pk = None
+    #    r.title = f'Sopinha de Letras - {receitas}'
+    #    r.save()
+
+    # Altera o campo SLUG na base de dados
+    #r = Recipe.objects.all()
+    # for index, item in enumerate(r):
+    #    item.slug = f'{item.slug}-{index}'
+    #    item.save()
+
+    # for i in r:
+    #    print(i.slug)
+
     recipes = Recipe.objects.filter(is_published=True).order_by('-id')
     return render(request, 'recipes/pages/home.html', context={'recipes': recipes, })
 
