@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_list_or_404, get_object_or_404, render
 
@@ -52,4 +53,26 @@ def recipe(request, id: int):
         'recipe': recipe,
         'is_detail_page': True,
 
+    })
+
+
+def search(request):
+    # Nesta linha ele vai na meu formulario PARTIAL search.html no name ('q') do INPUT e envia pelo metodo GET da requisição
+    search_term = request.GET.get('q', '').strip()
+
+    if not search_term:
+        raise Http404()
+
+    # (variavel)__icontains - como se fosse um LIKE, ele vai procurar na base de dados se contain e o (i) é para ignorar
+    # Maiuscula e Minusculas
+    # E o "Q" com o operador "|", é a mesma coisa que o OR
+    recipes = Recipe.objects.filter(
+        Q(title__icontains=search_term) |
+        Q(description__icontains=search_term),
+    ).order_by('-id')
+
+    return render(request, 'recipes/pages/search.html', {
+        'page_title': f'Search for "{ search_term }"',
+        'search_term': search_term,
+        'recipes_filtered': recipes,
     })
