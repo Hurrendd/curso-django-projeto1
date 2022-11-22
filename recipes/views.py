@@ -12,9 +12,10 @@ from .models import Recipe
 def home(request):
     # Duplica as receitas baseado na ID=1
     #r = Recipe.objects.get(pk=1)
-    # for receitas in range(20):
+    # for receitas in range(1000):
     #    r.pk = None
     #    r.title = f'Sopinha de Letras - {receitas}'
+    #    r.slug = f'receita-duplicada-{receitas + 21}'
     #    r.save()
 
     # Altera o campo SLUG na base de dados
@@ -67,8 +68,11 @@ def search(request):
     # Maiuscula e Minusculas
     # E o "Q" com o operador "|", é a mesma coisa que o OR
     recipes = Recipe.objects.filter(
-        Q(title__icontains=search_term) |
-        Q(description__icontains=search_term),
+        Q(
+            Q(title__icontains=search_term) |
+            Q(description__icontains=search_term),
+        ),
+        is_published=True
     ).order_by('-id')
 
     return render(request, 'recipes/pages/search.html', {
