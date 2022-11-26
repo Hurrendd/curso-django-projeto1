@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from django.urls import resolve, reverse
 
 from recipes import views
@@ -34,20 +36,16 @@ class RecipeHomeViewTest(RecipeTestBase):
     # Primeiro teste com conteudo. Verificca se a receitas são carregado
     # Mas para isso cria-se as receitas
     def test_recipe_home_template_loads_recipes(self):
-        self.make_recipe(author_data={'first_name': 'Hurrendd'})
+       # Need a recipe for this test
+        self.make_recipe()
+
         response = self.client.get(reverse('recipes:home'))
-        # Aqui retornar uma QUERYSET como todos os registros na BASE DE DADOS de TESTE
-        response_context = response.context['recipes']
-        response_content = response.content.decode(response.charset)
-        # Teste a quantidade de receitas
-        self.assertEqual(len(response_context), 1)
-        # Aqui testa o contexto com todos os campos. testando se os campos do CONTEXT aparecem no CONTENT do HTML
-        self.assertEqual(response_context.first().title, 'Recipe Title')
-        self.assertIn(response_context.first().title, response_content)
-        self.assertIn(
-            f'{response_context.first().preparation_time} {response_context.first().preparation_time_unit}', response_content)
-        self.assertIn(response_context.first(
-        ).author.first_name, response_content)
+        content = response.content.decode('utf-8')
+        response_context_recipes = response.context['recipes']
+
+        # Check if one recipe exists
+        self.assertIn('Recipe Title', content)
+        self.assertEqual(len(response_context_recipes), 1)
 
     def test_recipe_home_template_dont_load_recipes_not_published(self):
         self.make_recipe(is_published=False)
@@ -58,3 +56,19 @@ class RecipeHomeViewTest(RecipeTestBase):
         self.assertIn('<h1>Não existem receitas para serem mostradas.</h1>',
                       response_content)
         self.assertEqual(len(response_context), 0)
+
+    def test_recipe_home_is_paginated(self):
+        for i in range(8):
+            kwargs = {'slug': f'r{i}', 'author_data': {'username': f'u{i}'}}
+            self.make_recipe(**kwargs)
+
+        # aqui eu indico o caminho da variável que estou utilizando
+        with patch('recipes.views.PER_PAGE', new=3):
+            response = self.client.get(reverse('recipes:home'))
+            recipes = response.context['recipes']
+            paginator = recipes.paginator
+
+            self.assertEqual(paginator.num_pages, 3)
+            self.assertEqual(len(paginator.get_page(1)), 3)
+            self.assertEqual(len(paginator.get_page(2)), 3)
+            self.assertEqual(len(paginator.get_page(3)), 2)
