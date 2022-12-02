@@ -120,3 +120,16 @@ class AuthorRegisterFormIntegrationTest(DjangoTestCase):
         response = self.client.post(url, data=self.form_data, follow=True)
         msg = 'Confirmation password error. The fields must be the same.'
         self.assertIn(msg, response.content.decode('utf-8'))
+
+    def test_send_get_request_to_registration_create_view_returns_404(self):
+        url = reverse('authors:create')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_if_email_already_exists(self):
+        url = reverse('authors:create')
+        self.client.post(url, data=self.form_data, follow=True)
+        response = self.client.post(url, data=self.form_data, follow=True)
+        msg = 'User E-mail is already in use.'
+        self.assertIn(msg, response.context['form'].errors.get('email'))
+        self.assertIn(msg, response.content.decode('utf-8'))

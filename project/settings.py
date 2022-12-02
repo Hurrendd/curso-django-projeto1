@@ -64,6 +64,7 @@ TEMPLATES = [
             BASE_DIR / 'recipes' / 'templates_temp',
             BASE_DIR / 'templates',
             BASE_DIR / 'base_templates',
+            BASE_DIR / 'base_static',
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -128,7 +129,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / 'static/recipes',
+    BASE_DIR / 'base_static/',
 ]
 
 MEDIA_URL = 'media/'

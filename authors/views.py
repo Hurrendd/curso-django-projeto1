@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.http import Http404
 from django.shortcuts import redirect, render
+from django.urls import reverse
 
 from .forms import RegisterForm
 
@@ -16,7 +17,8 @@ def register_view(request):
     return render(request, 'authors/page/register_view.html',
                   context={
                       'author': 'Hurrendd de Sousa Ramos',
-                      'form': form
+                      'form': form,
+                      'form_action': reverse('authors:create'),
                   })
 
 # este metodo é responsavel por receber (POST), tratar os dados e redirecionar
@@ -31,7 +33,12 @@ def register_create(request):
     form = RegisterForm(request.POST)
 
     if form.is_valid():
-        form.save()
+        # estamos colocando o formulario em uma variavel
+        user = form.save(commit=False)
+        # aqui criptografa a senha para gravar no banco de dados
+        user.set_password(user.password)
+        user.save()
+
         messages.success(request, 'Your user is created, please log in.')
         del (request.session['register_form_data'])
     else:
