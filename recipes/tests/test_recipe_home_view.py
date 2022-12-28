@@ -58,9 +58,7 @@ class RecipeHomeViewTest(RecipeTestBase):
         self.assertEqual(len(response_context), 0)
 
     def test_recipe_home_is_paginated(self):
-        for i in range(8):
-            kwargs = {'slug': f'r{i}', 'author_data': {'username': f'u{i}'}}
-            self.make_recipe(**kwargs)
+        self.make_recipe_in_batch(8)
 
         # aqui eu indico o caminho da variável que estou utilizando
         with patch('recipes.views.PER_PAGE', new=3):
