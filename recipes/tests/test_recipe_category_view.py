@@ -11,7 +11,7 @@ class RecipeCategoryViewTest(RecipeTestBase):
     def test_recipe_category_view_function_is_correct(self):
         view = resolve(reverse('recipes:category', args=(1,)))
         # Aqui ele verifica se são a mesma referencia na memoria
-        self.assertIs(view.func, views.category)
+        self.assertIs(view.func.view_class, views.RecipeListViewCategory)
 
     # Aqui teste se o retorno da categoria é status code 404, caso uma categoria não exista
     def test_recipe_category_view_returns_404_if_no_category_found(self):
@@ -37,5 +37,5 @@ class RecipeCategoryViewTest(RecipeTestBase):
     def test_recipe_category_template_dont_load_recipes_not_published(self):
         recipe = self.make_recipe(is_published=False)
         response = self.client.get(
-            reverse('recipes:recipe', kwargs={'id': recipe.category.id}))
+            reverse('recipes:recipe', kwargs={'pk': recipe.category.id}))
         self.assertEqual(response.status_code, 404)
