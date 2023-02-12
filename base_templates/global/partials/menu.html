@@ -1,0 +1,46 @@
+<button class="button-show-menu button-show-menu-visible">
+    <i class="fa-solid fa-bars"></i>
+    <span class="hidden-text">Show Menu</span>
+</button>
+
+<div class="menu-container menu-hidden">
+    <button class="button-close-menu button-close-menu-visible">
+        <i class="fa-solid fa-circle-xmark"></i>
+        <span class="hidden-text">Close Menu</span>
+    </button>
+
+    <div class="menu-content">
+        <nav class="menu-nav">
+            <a href="{% url 'recipes:home' %}">
+                <i class="fa-solid fa-house-chimney"></i>
+                Home
+            </a>
+            
+            {% if user.is_authenticated %}
+                <a href="{% url 'authors:dashboard_recipe_new' %}">
+                    <i class="fa-regular fa-file"></i>
+                    New Recipe
+                </a>
+                <a href="{% url 'authors:dashboard' %}">
+                    <i class="fa-solid fa-table-columns"></i>
+                    Dashboard
+                </a>
+                <a href="{% url 'authors:logout' %}" class="authors-logout-link">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    Logout
+                </a>
+                {% include 'authors/partials/form_logout.html' %}
+                
+            {% else %}
+                <a href="{% url 'authors:login' %}">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                    Login
+                </a>
+                <a href="{% url 'authors:register' %}">
+                    <i class="fa-solid fa-address-card"></i>
+                    Register
+                </a>
+            {% endif %}                
+        </nav>
+    </div>
+</div>

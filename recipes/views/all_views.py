@@ -6,9 +6,12 @@ from django.db.models import Q
 from django.forms.models import model_to_dict
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_list_or_404, get_object_or_404, render
+from django.utils import translation
+from django.utils.translation import gettext as _
 from django.views.generic import DetailView, ListView
 
 from recipes.models import Recipe
+from tag.models import Tag
 from utils.recipes.factory import make_recipe
 from utils.recipes.pagination import make_pagination, make_pagination_range
 
@@ -30,7 +33,8 @@ class RecipeListViewBase(ListView):
         qs = qs.filter(
             is_published=True,
         )
-        qs = qs.select_related('author', 'category')
+        qs = qs.select_related('author', 'category', 'author__profile')
+        qs = qs.prefetch_related('tags', 'author__profile')
         return qs
 
     def get_context_data(self, *args, **kwargs):
@@ -38,9 +42,11 @@ class RecipeListViewBase(ListView):
         page_obj, pagination_range = make_pagination(
             request=self.request, queryset=ctx.get('recipes'), per_page=PER_PAGE, qty_pages=6)
 
+        html_language = translation.get_language()
         ctx.update({
             'recipes': page_obj,
-            'pagination_range': pagination_range
+            'pagination_range': pagination_range,
+            'html_language': html_language,
         })
         return ctx
 
@@ -65,8 +71,10 @@ class RecipeListViewCategory(RecipeListViewBase):
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
+        # O Underline é um alias de GETTEXT do pacote TRANSLATION
+        category_trans = _('Category')
         ctx.update(
-            {'title': f'Category - {ctx.get("recipes")[0].category.name}',
+            {'title': f'{category_trans} - {ctx.get("recipes")[0].category.name}',
              'PER_PAGE': PER_PAGE}
         )
 
@@ -151,10 +159,31 @@ class RecipeDetailApi(DetailView):
         return JsonResponse(recipe_dict, safe=False,)
 
 
+class RecipeListViewTag(RecipeListViewBase):
+    template_name = 'recipes/pages/tag.html'
+
+    def get_queryset(self, *args, **kwargs):
+        qs = super().get_queryset(*args, **kwargs)
+        qs = qs.filter(tags__slug=self.kwargs.get('slug', ''))
+        return qs
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        page_title = Tag.objects.filter(
+            slug=self.kwargs.get('slug', '')).first()
+        if not page_title:
+            page_title = 'No recipe found.'
+
+        page_title = f'{page_title} - Tag '
+        ctx.update({
+            'page_title': f'{ page_title }',
+        })
+        return ctx
+
+
 def theory(request, *args, **kwargs):
     x = (2.9230 * 150.30529018) * 5.20
-    recipes = Recipe.objects.all()
-    recipes = recipes.filter(title__icontains='Receita')
+    recipes = Recipe.objects.values('id', 'title', 'author__first_name')[:10]
     context = {
         'x': x,
         'recipes': recipes

@@ -1,3 +1,4 @@
+{% load i18n %}
 <div class="recipe recipe-list-item">
     <div class="recipe-cover">
         {% if recipe.cover %}
@@ -23,11 +24,17 @@
         
         {% if recipe.author is not None %}
             <span class="recipe-author-item">
-                <i class="fa-solid fa-user"></i>
-                {% if recipe.author.first_name %}
-                    {{ recipe.author.first_name }} {{ recipe.author.last_name}}
-                {% else %}
-                    {{ recipe.author.username}}
+                {% if recipe.author.profile %}
+                    <a href="{% url 'authors:profile' recipe.author.profile.id %}">
+                {% endif %}
+                    <i class="fa-solid fa-user"></i>
+                    {% if recipe.author.first_name %}
+                        {{ recipe.author.first_name }} {{ recipe.author.last_name}}
+                    {% else %}
+                        {{ recipe.author.username}}
+                    {% endif %}
+                {% if recipe.author.profile %}
+                    </a>
                 {% endif %}
             </span>
         {% else %}
@@ -56,14 +63,14 @@
 
     <div class="recipe-meta-container">
         <div class="recipe-meta recipe-preparation">
-            <h3 class="recipe-meta-title"><i class="fa-solid fa-stopwatch"></i> Preparo</h3>
+            <h3 class="recipe-meta-title"><i class="fa-solid fa-stopwatch"></i> {% translate 'Preparation' %}</h3>
             <div class="recipe-meta-text">
                 {{ recipe.preparation_time }} {{ recipe.preparation_time_unit}}
             </div>
         </div>
 
         <div class="recipe-meta recipe-servings">
-            <h3 class="recipe-meta-title"><i class="fa-solid fa-pizza-slice"></i> Porções</h3>
+            <h3 class="recipe-meta-title"><i class="fa-solid fa-pizza-slice"></i> {% translate 'Servings' %}</h3>
             <div class="recipe-meta-text">
                 {{ recipe.servings }} {{ recipe.servings_unit }}
             </div>
@@ -74,7 +81,7 @@
     <footer class="recipe-footer">
         <a href="{% url 'recipes:recipe' recipe.id %}" class="recipe-read-more button button-dark button-full-width">
             <i class="fa-solid fa-eye"></i>
-            <span>Ver mais...</span>
+            <span>{% translate 'See More' %}...</span>
         </a>
     </footer>
     {% endif %}
@@ -87,6 +94,16 @@
             {{ recipe.preparation_steps|linebreaksbr }}
         {% endif %}
         
+        {% if recipe.tags.all %}
+        <P>
+            Tags:
+            
+            {% for tag in recipe.tags.all %}
+                <a href="{% url 'recipes:tags' tag.slug %}">{{ tag.name}}, </a>
+            {% endfor %}
+                
+        </P>
+        {% endif %}
     </div>
     {% endif %}
 </div>
